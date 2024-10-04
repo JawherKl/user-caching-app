@@ -36,28 +36,21 @@ npm install
 ### 4. Configure PostgreSQL
 
 #### 1. Create a PostgresSQL database (e.g,userdb):
-    ```
-        CREATE DATABASE userdb;
-    ```
+    CREATE DATABASE userdb;
 
 #### 2. Inside the userdb, create a users table:
-    ```
-        CREATE TABLE users (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(100),
-            email VARCHAR(100)
-        );
-    ```
+    CREATE TABLE users (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100),
+        email VARCHAR(100)
+    );
 
 #### 3. Insert sample data into the users table:
-    ``` 
-        INSERT INTO users (name, email) VALUES 
-        ('John Doe', 'john@example.com'),
-        ('Jane Smith', 'jane@example.com');
-    ```
+         INSERT INTO users (name, email) VALUES 
+         ('John Doe', 'john@example.com'),
+         ('Jane Smith', 'jane@example.com');
 
 #### 4. Update your PostgreSQL credentials in index.js:
-    ```
         const pgPool = new Pool({
             user: 'your_pg_user',
             host: 'localhost',
@@ -65,7 +58,6 @@ npm install
             password: 'your_pg_password',
             port: 5432
         });
-    ```
 
 ### 5. Start Redis
 Ensure that Redis is running locally. If Redis is installed, you can start it by running:
@@ -94,21 +86,20 @@ Description: Fetches the user profile by ID. If the user profile is cached, it r
         curl http://localhost:3000/user/1
     ```
     Example Response (Cache Miss, Fetched from PostgreSQL):
-    ```
+        
         {
             "id": 1,
             "name": "John Doe",
             "email": "john@example.com"
         }
-    ```
+        
 Example Response (Cache Hit, Fetched from Redis):
-    ```
+    
         {
             "id": 1,
             "name": "John Doe",
             "email": "john@example.com"
         }
-    ```
 
 ### 2. Update User Profile (PUT)
 Endpoint:
@@ -123,26 +114,22 @@ Example Request:
     ```
 
 Example Response:
-    ```
-        {
-            "id": 1,
-            "name": "John Updated",
-            "email": "johnnew@example.com"
-        }
-    ```
+    
+    {
+        "id": 1,
+        "name": "John Updated",
+        "email": "johnnew@example.com"
+    }
 
 ## How Caching Works
 
 ### 1. Cache Hit
-
     If a user profile is already cached in Redis, the server returns the cached data, avoiding a PostgreSQL query. This reduces latency and improves performance for repeated read requests.
 
 ### 2. Cache Miss
-
     If the user profile is not found in Redis (cache miss), the server fetches the data from PostgreSQL, caches the result in Redis for 1 hour, and then returns the data.
 
 ### 3. Cache Invalidation
-
     When a user profile is updated, the corresponding cache entry is deleted from Redis. The updated data will be fetched from PostgreSQL and cached again on the next read request.
 
 ## Testing with Postman or Curl
@@ -183,9 +170,8 @@ Update the profile for user with ID 1:
 ## Troubleshooting
 ### 1. Redis Client Error: ClientClosedError: The client is closed
 This error occurs if the Redis client is used after it has been closed. To resolve this, make sure that the Redis client is properly initialized and connected before usage. Ensure the following in your index.js file:
-    ```
+    
         redisClient.connect().catch(console.error);
-    ```
 
 ### 2. Redis Connection Issues
 Ensure Redis is running locally. You can check Redis status by running:
@@ -199,7 +185,6 @@ Ensure that your PostgreSQL server is running and your database credentials are 
 
 ## License
 This project is open-source and available under the MIT License.
-    ```
+
         ---
         You can now copy and paste this into your `README.md` file. Let me know if any further tweaks are needed!
-    ```
