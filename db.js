@@ -1,4 +1,3 @@
-// db.js - PostgreSQL queries
 const { Pool } = require('pg');
 
 // PostgreSQL setup
@@ -64,8 +63,18 @@ async function searchUsers(query) {
     }
 }
 
+async function createUser(name, email) {
+    // Simulating database insertion
+    // Replace this with your actual database logic
+    const newUser = { id: Date.now(), name, email };
+    console.log(`Creating user: ${JSON.stringify(newUser)}`);
+    return newUser;
+}
+
 module.exports = {
     fetchPaginatedUsers,
     updateUser,
-    searchUsers // Export the new search function
+    getUser,
+    searchUsers,
+    createUser
 };

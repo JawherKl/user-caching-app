@@ -159,13 +159,13 @@ Update the profile for user with ID 1:
     ```
 
 ### User Caching App Screenshots 
-![One](Capture%20d’écran%20de%202024-10-04%2010-23-38.png)
+![One](./screenshots/Capture%20d’écran%20de%202024-10-04%2010-23-38.png)
 
-![Two](Capture%20d’écran%20de%202024-10-04%2010-23-54.png)
+![Two](./screenshots/Capture%20d’écran%20de%202024-10-04%2010-23-54.png)
 
-![Three](Capture%20d’écran%20de%202024-10-04%2010-24-07.png)
+![Three](./screenshots/Capture%20d’écran%20de%202024-10-04%2010-24-07.png)
 
-![Four](Capture%20d’écran%20de%202024-10-04%2010-26-56.png)
+![Four](./screenshots/Capture%20d’écran%20de%202024-10-04%2010-26-56.png)
 
 ## Troubleshooting
 ### 1. Redis Client Error: ClientClosedError: The client is closed
@@ -182,6 +182,23 @@ Ensure Redis is running locally. You can check Redis status by running:
 
 ### 3. PostgreSQL Connection Issues
 Ensure that your PostgreSQL server is running and your database credentials are correct. If you encounter connection errors, verify your database credentials and ensure that PostgreSQL is accessible on localhost:5432.
+
+## Features
+
+1. **Get User by ID**: Fetches a user profile from PostgreSQL, with caching implemented for faster reads.
+2. **Paginated User List**: Retrieves users in a paginated manner, with cached pages for faster subsequent requests.
+3. **Update User**: Updates a user profile and invalidates the cache for paginated user lists.
+4. **Search Users**: Allows searching for users by name or email, with caching for search results.
+5. **Rate Limiting**: Limits the number of API requests to prevent abuse.
+6. **Post New User**: Allows posting a new user to the database.
+7. **IP Address Retrieval**: Correctly handles the retrieval of the real client IP address, even behind a reverse proxy.
+
+## Requirements
+
+- Node.js
+- PostgreSQL
+- Redis
+- Express.js
 
 ## License
 This project is open-source and available under the MIT License.
