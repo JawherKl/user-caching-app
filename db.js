@@ -50,9 +50,22 @@ async function getUser(userId) {
         throw error;
     }
 }
+// Search users by name or email
+async function searchUsers(query) {
+    try {
+        const { rows: users } = await pgPool.query(
+            'SELECT * FROM users WHERE name ILIKE $1 OR email ILIKE $2',
+            [`%${query}%`, `%${query}%`]
+        );
+        return users;
+    } catch (error) {
+        console.error('Error searching users in PostgreSQL:', error);
+        throw error;
+    }
+}
 
 module.exports = {
     fetchPaginatedUsers,
     updateUser,
-    getUser
+    searchUsers // Export the new search function
 };

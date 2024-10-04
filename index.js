@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 
-const { fetchPaginatedUsers, updateUser, getUser } = require('./db');
+const { fetchPaginatedUsers, updateUser, getUser, searchUsers } = require('./db');
 const { getFromCache, setToCache, invalidateCache } = require('./cache');
 
 // API to fetch user profile
@@ -85,6 +85,38 @@ app.put('/user/:id', async (req, res) => {
     } catch (error) {
         console.error('Error updating user:', error);
         return res.status(500).send('Error updating user');
+    }
+});
+
+// Search users by name or email
+app.get('/search-users', async (req, res) => {
+    const { query } = req.query;
+
+    if (!query) {
+        return res.status(400).json({ message: 'Query parameter is required' });
+    }
+
+    const cacheKey = `users:search:${query}`;
+
+    try {
+        // Fetch from Redis cache
+        const cachedUsers = await getFromCache(cacheKey);
+        if (cachedUsers) {
+            console.log('Cache hit for search');
+            return res.json(cachedUsers);
+        }
+
+        // Search in PostgreSQL
+        const users = await searchUsers(query);
+
+        // Store result in Redis with a TTL of 1 hour
+        await setToCache(cacheKey, users);
+        console.log('Cache miss, fetching search results from PostgreSQL');
+
+        return res.json(users);
+    } catch (error) {
+        console.error('Error searching users:', error);
+        return res.status(500).send('Error searching users');
     }
 });
 
