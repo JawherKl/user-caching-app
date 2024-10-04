@@ -90,6 +90,38 @@ app.put('/user/:id', async (req, res) => {
     }
 });
 
+// Paginated user list
+app.get('/users', async (req, res) => {
+    const { page = 1, limit = 10 } = req.query;  // Default values: page 1, limit 10
+    const offset = (page - 1) * limit;
+
+    try {
+        // Check Redis cache
+        const cacheKey = `users:page:${page}:limit:${limit}`;
+        const cachedUsers = await redisClient.get(cacheKey);
+
+        if (cachedUsers) {
+            console.log('Cache hit');
+            return res.json(JSON.parse(cachedUsers));
+        }
+
+        // Query PostgreSQL for paginated users
+        const { rows: users } = await pgPool.query(
+            'SELECT * FROM users ORDER BY id LIMIT $1 OFFSET $2',
+            [limit, offset]
+        );
+
+        // Store in Redis with a TTL of 1 hour
+        await redisClient.setEx(cacheKey, 3600, JSON.stringify(users));
+
+        console.log('Cache miss, fetching from PostgreSQL');
+        return res.json(users);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error fetching users');
+    }
+});
+
 // Start the server
 const port = 3000;
 app.listen(port, () => {
