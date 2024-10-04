@@ -1,9 +1,8 @@
-// cache.js - Redis caching logic
 const redis = require('redis');
 const redisClient = redis.createClient({
     host: '172.28.0.2',
     port: 6379
-    });
+});
 
 
 // Properly connect Redis client

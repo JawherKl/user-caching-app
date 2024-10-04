@@ -11,6 +11,7 @@
   "description": "",
   "dependencies": {
     "express": "^4.21.0",
+    "node-cron": "^3.0.3",
     "pg": "^8.13.0",
     "redis": "^4.7.0"
   }

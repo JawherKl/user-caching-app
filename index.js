@@ -2,8 +2,11 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 
-const { fetchPaginatedUsers, updateUser, getUser, searchUsers } = require('./db');
+const { fetchPaginatedUsers, updateUser, getUser, searchUsers, createUser } = require('./db');
 const { getFromCache, setToCache, invalidateCache } = require('./cache');
+const rateLimit = require('./rateLimiter');
+
+app.set('trust proxy', true);
 
 // API to fetch user profile
 app.get('/user/:id', async (req, res) => {
@@ -38,7 +41,7 @@ app.get('/user/:id', async (req, res) => {
 });
 
 // Paginated user list endpoint
-app.get('/users', async (req, res) => {
+app.get('/users', rateLimit(5, 900), async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
     const offset = (page - 1) * limit;
 
@@ -118,6 +121,41 @@ app.get('/search-users', async (req, res) => {
         console.error('Error searching users:', error);
         return res.status(500).send('Error searching users');
     }
+});
+
+// Create a new user
+app.post('/users', async (req, res) => {
+    const { name, email } = req.body;
+
+    // Validate input
+    if (!name || !email) {
+        return res.status(400).json({ message: 'Name and email are required' });
+    }
+
+    try {
+        // Create the new user in the database
+        const newUser = await createUser(name, email);
+
+        // Invalidate the cache for the user list
+        await invalidateCache('users:page:*');
+
+        // Return the created user
+        res.status(201).json(newUser);
+    } catch (error) {
+        console.error('Error creating user:', error);
+        return res.status(500).send('Internal Server Error');
+    }
+});
+
+// Apply rate limit to the user routes
+app.use('/users', rateLimit(100, 900)); // 5 requests every 900 seconds (15 minutes)
+
+// You can apply it to specific routes too
+app.use('/search-users', rateLimit(50, 600)); // 50 requests every 10 minutes
+
+// Error handling middleware for invalid routes
+app.use((req, res, next) => {
+    res.status(404).json({ message: 'Route not found' });
 });
 
 const PORT = 3000;
