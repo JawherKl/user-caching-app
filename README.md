@@ -172,6 +172,10 @@ Update the profile for user with ID 1:
     ``` bash
         curl http://localhost:3000/user/1
     ```
+### [User Caching App Screenshots One](Capture%20d’écran%20de%202024-10-04%2010-23-38.png)
+### [User Caching App Screenshots Two](Capture%20d’écran%20de%202024-10-04%2010-23-54.png)
+### [User Caching App Screenshots Three](Capture%20d’écran%20de%202024-10-04%2010-24-07.png)
+### [User Caching App Screenshots Four](Capture%20d’écran%20de%202024-10-04%2010-26-56.png)
 
 ## Troubleshooting
 ### 1. Redis Client Error: ClientClosedError: The client is closed
