@@ -174,10 +174,13 @@ Update the profile for user with ID 1:
     ```
 
 ### User Caching App Screenshots 
-[One](Capture%20d’écran%20de%202024-10-04%2010-23-38.png)
-[Two](Capture%20d’écran%20de%202024-10-04%2010-23-54.png)
-[Three](Capture%20d’écran%20de%202024-10-04%2010-24-07.png)
-[Four](Capture%20d’écran%20de%202024-10-04%2010-26-56.png)
+![One](Capture%20d’écran%20de%202024-10-04%2010-23-38.png)
+
+![Two](Capture%20d’écran%20de%202024-10-04%2010-23-54.png)
+
+![Three](Capture%20d’écran%20de%202024-10-04%2010-24-07.png)
+
+![Four](Capture%20d’écran%20de%202024-10-04%2010-26-56.png)
 
 ## Troubleshooting
 ### 1. Redis Client Error: ClientClosedError: The client is closed
