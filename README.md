@@ -36,12 +36,12 @@ npm install
 ### 4. Configure PostgreSQL
 
 #### 1. Create a PostgresSQL database (e.g,userdb):
-    ``` sql
+    ```
         CREATE DATABASE userdb;
     ```
 
 #### 2. Inside the userdb, create a users table:
-    ``` sql
+    ```
         CREATE TABLE users (
             id SERIAL PRIMARY KEY,
             name VARCHAR(100),
@@ -50,13 +50,14 @@ npm install
     ```
 
 #### 3. Insert sample data into the users table:
-    ``` sql 
+    ``` 
         INSERT INTO users (name, email) VALUES 
         ('John Doe', 'john@example.com'),
         ('Jane Smith', 'jane@example.com');
     ```
+
 #### 4. Update your PostgreSQL credentials in index.js:
-    ``` javascript
+    ```
         const pgPool = new Pool({
             user: 'your_pg_user',
             host: 'localhost',
@@ -93,18 +94,15 @@ Description: Fetches the user profile by ID. If the user profile is cached, it r
         curl http://localhost:3000/user/1
     ```
     Example Response (Cache Miss, Fetched from PostgreSQL):
-
-    ``` json
+    ```
         {
             "id": 1,
             "name": "John Doe",
             "email": "john@example.com"
         }
     ```
-
-    Example Response (Cache Hit, Fetched from Redis):
-
-    ``` json
+Example Response (Cache Hit, Fetched from Redis):
+    ```
         {
             "id": 1,
             "name": "John Doe",
@@ -114,7 +112,7 @@ Description: Fetches the user profile by ID. If the user profile is cached, it r
 
 ### 2. Update User Profile (PUT)
 Endpoint:
-    ``` bash
+    ```bash
         PUT /user/:id
     ```
 
@@ -125,7 +123,7 @@ Example Request:
     ```
 
 Example Response:
-    ``` json
+    ```
         {
             "id": 1,
             "name": "John Updated",
@@ -185,8 +183,7 @@ Update the profile for user with ID 1:
 ## Troubleshooting
 ### 1. Redis Client Error: ClientClosedError: The client is closed
 This error occurs if the Redis client is used after it has been closed. To resolve this, make sure that the Redis client is properly initialized and connected before usage. Ensure the following in your index.js file:
-
-    ``` javascript
+    ```
         redisClient.connect().catch(console.error);
     ```
 
@@ -202,7 +199,7 @@ Ensure that your PostgreSQL server is running and your database credentials are 
 
 ## License
 This project is open-source and available under the MIT License.
-    ``` yaml
+    ```
         ---
         You can now copy and paste this into your `README.md` file. Let me know if any further tweaks are needed!
     ```
