@@ -68,28 +68,6 @@ app.get('/user/:id', async (req, res) => {
     }
 });
 
-// API to update user profile
-app.put('/user/:id', async (req, res) => {
-    const userId = req.params.id;
-    const { name, email } = req.body;
-
-    // Update PostgreSQL
-    const result = await pgPool.query(
-        'UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING *',
-        [name, email, userId]
-    );
-
-    const updatedUser = result.rows[0];
-
-    if (updatedUser) {
-        // Invalidate the cached user data in Redis
-        redisClient.del(`user:${userId}`);
-        res.json(updatedUser);
-    } else {
-        res.status(404).send('User not found');
-    }
-});
-
 // Paginated user list
 app.get('/users', async (req, res) => {
     const { page = 1, limit = 10 } = req.query;  // Default values: page 1, limit 10
@@ -119,6 +97,32 @@ app.get('/users', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send('Error fetching users');
+    }
+});
+
+// Invalidate user list cache on updates
+app.put('/user/:id', async (req, res) => {
+    const { id } = req.params;
+    const { name, email } = req.body;
+
+    try {
+        // Update user in PostgreSQL
+        await pgPool.query(
+            'UPDATE users SET name = $1, email = $2 WHERE id = $3',
+            [name, email, id]
+        );
+
+        // Invalidate cache for all pages
+        const keys = await redisClient.keys('users:page:*');
+        if (keys.length > 0) {
+            await redisClient.del(keys);
+            console.log('User list cache invalidated');
+        }
+
+        res.json({ id, name, email });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error updating user');
     }
 });
 
