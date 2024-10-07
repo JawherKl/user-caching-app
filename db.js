@@ -9,6 +9,16 @@ const pgPool = new Pool({
     port: 5432,
 });
 
+async function getUserByEmail(email) {
+    try {
+        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+        return result;
+    } catch (error) {
+        console.error('Error fetching user by email:', error);
+        throw error;
+    }
+}
+
 // Fetch paginated users
 async function fetchPaginatedUsers(limit, offset) {
     try {
@@ -72,6 +82,7 @@ async function createUser(name, email) {
 }
 
 module.exports = {
+    getUserByEmail,
     fetchPaginatedUsers,
     updateUser,
     getUser,

@@ -5,11 +5,15 @@ app.use(express.json());
 const { fetchPaginatedUsers, updateUser, getUser, searchUsers, createUser } = require('./db');
 const { getFromCache, setToCache, invalidateCache } = require('./cache');
 const rateLimit = require('./rateLimiter');
+const { loginUser, authenticateToken } = require('./auth');
 
 app.set('trust proxy', true);
 
+// User login route
+app.post('/login', loginUser);
+
 // API to fetch user profile
-app.get('/user/:id', async (req, res) => {
+app.get('/user/:id', authenticateToken, async (req, res) => {
     const userId = req.params.id;
     const cacheKey = `user:${userId}`;
 
@@ -41,7 +45,7 @@ app.get('/user/:id', async (req, res) => {
 });
 
 // Paginated user list endpoint
-app.get('/users', rateLimit(5, 900), async (req, res) => {
+app.get('/users', authenticateToken, rateLimit(5, 900), async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
     const offset = (page - 1) * limit;
 
@@ -158,7 +162,7 @@ app.use((req, res, next) => {
     res.status(404).json({ message: 'Route not found' });
 });
 
-const PORT = 3000;
+const PORT=3000
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
