@@ -13,7 +13,7 @@ app.set('trust proxy', true);
 app.post('/login', loginUser);
 
 // API to fetch user profile
-app.get('/user/:id', authenticateToken, async (req, res) => {
+app.get('/user/:id', async (req, res) => {
     const userId = req.params.id;
     const cacheKey = `user:${userId}`;
 
@@ -45,7 +45,7 @@ app.get('/user/:id', authenticateToken, async (req, res) => {
 });
 
 // Paginated user list endpoint
-app.get('/users', authenticateToken, rateLimit(5, 900), async (req, res) => {
+app.get('/users', rateLimit(5, 900), async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
     const offset = (page - 1) * limit;
 
